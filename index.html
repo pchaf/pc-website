@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Words of Peace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,600;1,700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ivory: #f5f0e8;
+    --cream: #ede7d9;
+    --warm-white: #faf8f4;
+    --sage: #5c7a5e;
+    --deep-sage: #3d5e3f;
+    --warm-gold: #a07c20;
+    --charcoal: #111111;
+    --mid-grey: #444444;
+    --light-grey: #888888;
+    --border: #c8c0b0;
+    --shadow: rgba(0,0,0,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Raleway', sans-serif;
+    background: var(--warm-white);
+    color: var(--charcoal);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(92,122,94,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 85% 80%, rgba(196,160,154,0.08) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 60px 24px 44px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .header-ornament {
+    font-size: 13px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  header h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #000;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  header h1 em {
+    font-style: italic;
+    color: var(--deep-sage);
+  }
+
+  .header-sub {
+    font-size: 13px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--mid-grey);
+    font-weight: 600;
+  }
+
+  .admin-toggle {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    background: none;
+    border: 2px solid var(--border);
+    color: var(--mid-grey);
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 700;
+  }
+  .admin-toggle:hover { border-color: var(--sage); color: var(--deep-sage); }
+  .admin-toggle.active { background: var(--deep-sage); border-color: var(--deep-sage); color: white; }
+
+  /* ── SEARCH ── */
+  .search-bar {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    padding: 36px 24px 0;
+  }
+
+  .search-bar input {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255,255,255,0.8);
+    border: 2px solid var(--border);
+    padding: 13px 18px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--charcoal);
+    text-align: center;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .search-bar input::placeholder { color: var(--light-grey); font-weight: 500; }
+  .search-bar input:focus { border-color: var(--sage); }
+
+  /* ── ADMIN PANEL ── */
+  .admin-panel {
+    display: none;
+    position: relative;
+    z-index: 10;
+    max-width: 700px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+    animation: fadeSlideDown 0.4s ease;
+  }
+  .admin-panel.visible { display: block; }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-title {
+    font-size: 11px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 700;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .panel-title::before, .panel-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+  }
+
+  .form-grid { display: grid; gap: 16px; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+
+  .form-field label {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid-grey);
+    font-weight: 700;
+  }
+
+  .form-field input,
+  .form-field textarea {
+    background: rgba(255,255,255,0.85);
+    border: 2px solid var(--border);
+    padding: 12px 14px;
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+    resize: vertical;
+  }
+  .form-field input {
+    font-family: 'Raleway', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .form-field input:focus,
+  .form-field textarea:focus { border-color: var(--sage); background: white; }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+
+  .btn {
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-weight: 700;
+  }
+
+  .btn-primary { background: var(--deep-sage); border-color: var(--deep-sage); color: white; }
+  .btn-primary:hover { background: #222; border-color: #222; }
+
+  .btn-secondary { background: transparent; border-color: var(--border); color: var(--mid-grey); }
+  .btn-secondary:hover { border-color: var(--mid-grey); color: var(--charcoal); }
+
+  .btn-danger { background: transparent; border-color: #b85c52; color: #b85c52; }
+  .btn-danger:hover { background: #b85c52; color: white; }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    margin: 52px auto 0;
+    max-width: 700px;
+    padding: 0 24px;
+  }
+  .section-divider span {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--mid-grey);
+    font-weight: 700;
+    background: var(--warm-white);
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .section-divider::before {
+    content: '';
+    position: absolute;
+    left: 24px; right: 24px;
+    top: 50%;
+    height: 2px;
+    background: var(--border);
+  }
+
+  /* ── QUOTES GRID ── */
+  #quotes-container {
+    position: relative;
+    z-index: 10;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 52px 24px 100px;
+    columns: 1;
+    column-gap: 32px;
+  }
+
+  @media (min-width: 700px) { #quotes-container { columns: 2; } }
+  @media (min-width: 1020px) { #quotes-container { columns: 3; } }
+
+  .quote-card {
+    break-inside: avoid;
+    background: rgba(255,255,255,0.75);
+    border: 2px solid var(--border);
+    padding: 36px 32px 28px;
+    margin-bottom: 28px;
+    position: relative;
+    transition: box-shadow 0.3s, transform 0.3s;
+    backdrop-filter: blur(4px);
+    animation: cardFadeIn 0.5s ease both;
+  }
+
+  @keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .quote-card:hover {
+    box-shadow: 0 14px 44px var(--shadow);
+    transform: translateY(-2px);
+  }
+
+  .quote-mark {
+    font-family: 'Lora', serif;
+    font-size: 5rem;
+    line-height: 0.5;
+    color: var(--sage);
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 10px;
+    user-select: none;
+    font-weight: 700;
+  }
+
+  .quote-text {
+    font-family: 'Lora', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.75;
+    color: #000;
+    margin-bottom: 22px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .quote-author {
+    font-family: 'Raleway', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--deep-sage);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .quote-author::before {
+    content: '';
+    width: 24px;
+    height: 2px;
+    background: var(--sage);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .quote-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--warm-gold);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .quote-link:hover { border-color: var(--warm-gold); }
+
+  .card-actions {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    gap: 6px;
+  }
+  .admin-mode .card-actions { display: flex; }
+
+  .card-btn {
+    font-family: 'Raleway', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 2px solid var(--border);
+    background: rgba(255,255,255,0.9);
+    cursor: pointer;
+    color: var(--mid-grey);
+    transition: all 0.2s;
+    font-weight: 700;
+  }
+  .card-btn:hover { border-color: var(--sage); color: var(--deep-sage); }
+  .card-btn.del:hover { border-color: #b85c52; color: #b85c52; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--mid-grey);
+    font-family: 'Lora', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--warm-white);
+    border: 2px solid var(--border);
+    padding: 48px;
+    max-width: 560px;
+    width: 100%;
+    animation: modalIn 0.3s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-title {
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 700;
+    margin-bottom: 32px;
+    font-family: 'Raleway', sans-serif;
+  }
+
+  /* ── PASSWORD SCREEN ── */
+  #password-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--warm-white);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    animation: fadeIn 0.3s ease;
+  }
+  #password-screen.open { display: flex; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  #password-screen h2 {
+    font-family: 'Lora', serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: #000;
+    letter-spacing: 0.04em;
+  }
+
+  #password-screen input {
+    border: 2px solid var(--border);
+    background: white;
+    padding: 13px 20px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-align: center;
+    color: var(--charcoal);
+    outline: none;
+    width: 260px;
+    transition: border-color 0.3s;
+  }
+  #password-screen input:focus { border-color: var(--sage); }
+
+  .pw-error {
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #b85c52;
+    font-weight: 700;
+    min-height: 18px;
+    font-family: 'Raleway', sans-serif;
+  }
+
+  .pw-hint {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--light-grey);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 500;
+  }
+  .pw-hint strong { font-weight: 700; color: var(--mid-grey); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #111;
+    color: white;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 13px 30px;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 9999;
+    font-family: 'Raleway', sans-serif;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 560px) {
+    .modal { padding: 32px 20px; }
+    header { padding: 60px 16px 36px; }
+    .admin-toggle { top: 16px; right: 16px; font-size: 10px; padding: 8px 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Password Screen -->
+<div id="password-screen">
+  <p style="font-size:11px;letter-spacing:0.45em;text-transform:uppercase;color:var(--sage);font-weight:700;font-family:'Raleway',sans-serif;">Administrator Access</p>
+  <h2>Enter Password</h2>
+  <input type="password" id="pw-input" placeholder="· · · · · · · ·" onkeydown="if(event.key==='Enter')checkPassword()">
+  <div class="pw-error" id="pw-error"></div>
+  <div style="display:flex;gap:12px;">
+    <button class="btn btn-primary" onclick="checkPassword()">Enter</button>
+    <button class="btn btn-secondary" onclick="closePwScreen()">Cancel</button>
+  </div>
+  <p class="pw-hint">Default password: <strong>KeeP1tN0w!</strong></p>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <p class="modal-title">Edit Quote</p>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Quote</label>
+        <textarea id="edit-text" rows="4" placeholder="Enter the quote…"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Author</label>
+        <input type="text" id="edit-author" placeholder="Author name">
+      </div>
+      <div class="form-field">
+        <label>Link URL (optional)</label>
+        <input type="url" id="edit-url" placeholder="https://…">
+      </div>
+      <div class="form-field">
+        <label>Link Label (optional)</label>
+        <input type="text" id="edit-link-label" placeholder="Further reading…">
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:28px;">
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+      <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Header -->
+<header>
+  <button class="admin-toggle" id="admin-btn" onclick="handleAdminToggle()">Admin</button>
+  <p class="header-ornament">✦ A Collection ✦</p>
+  <h1>Words of <em>Peace</em></h1>
+  <p class="header-sub">Wisdom gathered from across the ages</p>
+</header>
+
+<!-- Search -->
+<div class="search-bar">
+  <input type="text" id="search-input" placeholder="Search quotes or authors…" oninput="renderQuotes()">
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="admin-panel">
+  <p class="panel-title">Add New Quote</p>
+  <div class="form-grid">
+    <div class="form-field">
+      <label>Quote</label>
+      <textarea id="new-text" rows="4" placeholder="Enter a quote about peace…"></textarea>
+    </div>
+    <div class="form-field">
+      <label>Author</label>
+      <input type="text" id="new-author" placeholder="Name of author or source">
+    </div>
+    <div class="form-field">
+      <label>Link URL (optional)</label>
+      <input type="url" id="new-url" placeholder="https://example.com">
+    </div>
+    <div class="form-field">
+      <label>Link Label (optional)</label>
+      <input type="text" id="new-link-label" placeholder="e.g. Further reading, Biography…">
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="addQuote()">Add Quote</button>
+    <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+    <button class="btn btn-danger" onclick="confirmReset()" style="margin-left:auto;">Reset All</button>
+  </div>
+</div>
+
+<!-- Divider -->
+<div class="section-divider">
+  <span id="quote-count-text">loading…</span>
+</div>
+
+<!-- Quotes -->
+<div id="quotes-container"></div>
+
+<script>
+const ADMIN_PASSWORD = 'KeeP1tN0w!';
+const STORAGE_KEY = 'words-of-peace-quotes';
+
+const DEFAULT_QUOTES = [
+  { id: 1, text: "Peace cannot be kept by force; it can only be achieved by understanding.", author: "Albert Einstein", url: "https://en.wikipedia.org/wiki/Albert_Einstein", linkLabel: "About Einstein" },
+  { id: 2, text: "If you want peace, you don't talk to your friends. You talk to your enemies.", author: "Desmond Tutu", url: "https://en.wikipedia.org/wiki/Desmond_Tutu", linkLabel: "About Desmond Tutu" },
+  { id: 3, text: "An eye for an eye only ends up making the whole world blind.", author: "Mahatma Gandhi", url: "https://en.wikipedia.org/wiki/Mahatma_Gandhi", linkLabel: "About Gandhi" },
+  { id: 4, text: "Peace is not absence of conflict; it is the ability to handle conflict by peaceful means.", author: "Ronald Reagan", url: "", linkLabel: "" },
+  { id: 5, text: "You cannot find peace by avoiding life.", author: "Virginia Woolf", url: "https://en.wikipedia.org/wiki/Virginia_Woolf", linkLabel: "About Virginia Woolf" },
+  { id: 6, text: "There is no way to peace, peace is the way.", author: "A.J. Muste", url: "", linkLabel: "" },
+  { id: 7, text: "Peace begins with a smile.", author: "Mother Teresa", url: "https://en.wikipedia.org/wiki/Mother_Teresa", linkLabel: "About Mother Teresa" },
+  { id: 8, text: "It isn't enough to talk about peace. One must believe in it. And it isn't enough to believe in it. One must work at it.", author: "Eleanor Roosevelt", url: "https://en.wikipedia.org/wiki/Eleanor_Roosevelt", linkLabel: "About Eleanor Roosevelt" },
+  { id: 9, text: "If we have no peace, it is because we have forgotten that we belong to each other.", author: "Mother Teresa", url: "", linkLabel: "" },
+  { id: 10, text: "Do your little bit of good where you are; it's those little bits of good put together that overwhelm the world.", author: "Desmond Tutu", url: "", linkLabel: "" },
+  { id: 11, text: "The practice of forgiveness is our most important contribution to the healing of the world.", author: "Marianne Williamson", url: "", linkLabel: "" },
+  { id: 12, text: "Darkness cannot drive out darkness; only light can do that. Hate cannot drive out hate; only love can do that.", author: "Martin Luther King Jr.", url: "https://en.wikipedia.org/wiki/Martin_Luther_King_Jr.", linkLabel: "About Dr. King" }
+];
+
+let quotes = [];
+let isAdmin = false;
+let editingId = null;
+
+function loadQuotes() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  quotes = stored ? JSON.parse(stored) : [...DEFAULT_QUOTES];
+}
+
+function saveQuotes() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(quotes));
+}
+
+function nextId() {
+  return quotes.length > 0 ? Math.max(...quotes.map(q => q.id)) + 1 : 1;
+}
+
+function handleAdminToggle() {
+  if (isAdmin) {
+    logOut();
+  } else {
+    document.getElementById('password-screen').classList.add('open');
+    setTimeout(() => document.getElementById('pw-input').focus(), 50);
+  }
+}
+
+function checkPassword() {
+  const val = document.getElementById('pw-input').value;
+  if (val === ADMIN_PASSWORD) {
+    isAdmin = true;
+    closePwScreen();
+    document.getElementById('admin-btn').classList.add('active');
+    document.getElementById('admin-btn').textContent = 'Exit Admin';
+    document.getElementById('admin-panel').classList.add('visible');
+    document.getElementById('quotes-container').classList.add('admin-mode');
+    showToast('Admin mode active');
+    renderQuotes();
+  } else {
+    document.getElementById('pw-error').textContent = 'Incorrect password';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function closePwScreen() {
+  document.getElementById('password-screen').classList.remove('open');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').textContent = '';
+}
+
+function logOut() {
+  isAdmin = false;
+  document.getElementById('admin-btn').classList.remove('active');
+  document.getElementById('admin-btn').textContent = 'Admin';
+  document.getElementById('admin-panel').classList.remove('visible');
+  document.getElementById('quotes-container').classList.remove('admin-mode');
+  showToast('Signed out');
+  renderQuotes();
+}
+
+function addQuote() {
+  const text = document.getElementById('new-text').value.trim();
+  const author = document.getElementById('new-author').value.trim();
+  const url = document.getElementById('new-url').value.trim();
+  const linkLabel = document.getElementById('new-link-label').value.trim();
+  if (!text || !author) { showToast('Quote and author are required'); return; }
+  quotes.unshift({ id: nextId(), text, author, url, linkLabel });
+  saveQuotes();
+  clearForm();
+  renderQuotes();
+  showToast('Quote added');
+}
+
+function clearForm() {
+  ['new-text','new-author','new-url','new-link-label'].forEach(id => document.getElementById(id).value = '');
+}
+
+function deleteQuote(id) {
+  if (!confirm('Delete this quote?')) return;
+  quotes = quotes.filter(q => q.id !== id);
+  saveQuotes();
+  renderQuotes();
+  showToast('Quote removed');
+}
+
+function openEditModal(id) {
+  const q = quotes.find(q => q.id === id);
+  if (!q) return;
+  editingId = id;
+  document.getElementById('edit-text').value = q.text;
+  document.getElementById('edit-author').value = q.author;
+  document.getElementById('edit-url').value = q.url || '';
+  document.getElementById('edit-link-label').value = q.linkLabel || '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  editingId = null;
+}
+
+function saveEdit() {
+  const text = document.getElementById('edit-text').value.trim();
+  const author = document.getElementById('edit-author').value.trim();
+  const url = document.getElementById('edit-url').value.trim();
+  const linkLabel = document.getElementById('edit-link-label').value.trim();
+  if (!text || !author) { showToast('Quote and author are required'); return; }
+  const idx = quotes.findIndex(q => q.id === editingId);
+  if (idx > -1) { quotes[idx] = { ...quotes[idx], text, author, url, linkLabel }; }
+  saveQuotes();
+  closeEditModal();
+  renderQuotes();
+  showToast('Quote updated');
+}
+
+function confirmReset() {
+  if (confirm('Reset all quotes to defaults? This cannot be undone.')) {
+    quotes = [...DEFAULT_QUOTES];
+    saveQuotes();
+    renderQuotes();
+    showToast('Quotes reset to defaults');
+  }
+}
+
+function renderQuotes() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  let filtered = quotes.filter(q =>
+    q.text.toLowerCase().includes(search) ||
+    q.author.toLowerCase().includes(search)
+  );
+
+  const counter = document.getElementById('quote-count-text');
+  counter.textContent = search
+    ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''} found`
+    : `${quotes.length} quote${quotes.length !== 1 ? 's' : ''}`;
+
+  const container = document.getElementById('quotes-container');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state">No quotes found…</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map((q, i) => `
+    <div class="quote-card" style="animation-delay:${Math.min(i * 0.05, 0.4)}s">
+      <div class="card-actions">
+        <button class="card-btn" onclick="openEditModal(${q.id})">Edit</button>
+        <button class="card-btn del" onclick="deleteQuote(${q.id})">Delete</button>
+      </div>
+      <span class="quote-mark">"</span>
+      <p class="quote-text">${escHtml(q.text)}</p>
+      <span class="quote-author">${escHtml(q.author)}</span>
+      ${q.url ? `<br><a class="quote-link" href="${escHtml(q.url)}" target="_blank" rel="noopener">${escHtml(q.linkLabel || 'Further reading')} ↗</a>` : ''}
+    </div>
+  `).join('');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeEditModal();
+});
+
+loadQuotes();
+renderQuotes();
+</script>
+</body>
+</html>
